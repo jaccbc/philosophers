@@ -6,7 +6,7 @@
 /*   By: joandre- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 22:05:12 by joandre-          #+#    #+#             */
-/*   Updated: 2024/09/25 17:49:13 by joandre-         ###   ########.fr       */
+/*   Updated: 2024/10/04 01:37:22 by joandre-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,15 @@ static void	time_to_sleep(t_philo *p)
 	die = p->tab->time_to_die;
 	sleep = p->tab->time_to_sleep;
 	eat = p->tab->time_to_eat;
-	if (!(get_bool(&p->tab->starv, &p->tab->starvation)))
+	if (!get_bool(&p->tab->starv, &p->tab->starvation))
 		print_log("is sleeping", p, get_time());
-	while (eat + sleep > get_diff(p))
+	while (eat + sleep > get_diff(p)
+		&& !get_bool(&p->tab->starv, &p->tab->starvation))
 		usleep(get_diff(p));
-	if (!(get_bool(&p->tab->starv, &p->tab->starvation)))
+	if (!get_bool(&p->tab->starv, &p->tab->starvation))
 		print_log("is thinking", p, get_time());
-	while (die - 10 > get_diff(p))
+	while (die - 10 > get_diff(p)
+		&& !get_bool(&p->tab->starv, &p->tab->starvation))
 		usleep(get_diff(p));
 }
 
@@ -54,7 +56,7 @@ static void	time_to_eat(t_philo *p)
 	}
 	else if (pthread_mutex_lock(p->next))
 		errmsg("pthread_mutex_lock");
-	if (!(get_bool(&p->tab->starv, &p->tab->starvation)))
+	if (!get_bool(&p->tab->starv, &p->tab->starvation))
 		print_log("has taken a fork", p, get_time());
 	if (p->id % 2)
 	{
@@ -63,9 +65,10 @@ static void	time_to_eat(t_philo *p)
 	}
 	else if (pthread_mutex_lock(&p->fork))
 		errmsg("pthread_mutex_lock");
-	if (!(get_bool(&p->tab->starv, &p->tab->starvation)))
+	if (!get_bool(&p->tab->starv, &p->tab->starvation))
 		print_log("is eating", p, meal_time(p));
-	while (p->tab->time_to_eat > get_diff(p))
+	while (p->tab->time_to_eat > get_diff(p)
+		&& get_bool(&p->tab->starv, &p->tab->starvation))
 		usleep(get_diff(p));
 	if (pthread_mutex_unlock(&p->fork))
 		errmsg("pthread_mutex_unlock");
