@@ -6,7 +6,7 @@
 /*   By: joandre- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 17:13:35 by joandre-          #+#    #+#             */
-/*   Updated: 2024/09/25 17:57:59 by joandre-         ###   ########.fr       */
+/*   Updated: 2024/10/04 02:44:03 by joandre-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,14 @@ typedef struct s_philo
 	t_table			*tab;
 }	t_philo;
 
-struct timeval	get_time(void);
+struct timeval	get_time(t_table *tab);
 struct timeval	get_last_meal(t_philo *p);
 time_t			get_diff(t_philo *p);
 void			print_log(const char *log, t_philo *p, struct timeval time);
-void			errmsg(const char *msg);
-void			set_bool(pthread_mutex_t *mtx, bool *ptr, bool flag);
-bool			get_bool(pthread_mutex_t *mtx, bool *ptr);
+void			errmsg(const char *msg, t_table *tab);
+void			set_bool(pthread_mutex_t *mtx, bool *ptr, bool flag,
+					t_table *tab);
+bool			get_bool(pthread_mutex_t *mtx, bool *ptr, t_table *tab);
 void			*diner(void *data);
 void			*monitor(void *data);
 bool			sim_init(t_table *tab);
